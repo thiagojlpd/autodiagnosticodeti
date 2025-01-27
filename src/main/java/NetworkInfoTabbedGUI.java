@@ -6,40 +6,46 @@ import java.net.*;
 import java.util.Enumeration;
 
 public class NetworkInfoTabbedGUI {
+    // Objeto estático para armazenar URLs de diagnóstico
     static Urls urls = new Urls();
 
     public static void main(String[] args) {
+        // Chama o método para criar a GUI (Interface Gráfica de Usuário)
         SwingUtilities.invokeLater(NetworkInfoTabbedGUI::createAndShowGUI);
     }
 
     private static void createAndShowGUI() {
+        // Criação da janela principal da interface
         JFrame frame = new JFrame("Autodiagnóstico de TI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
 
-        // Painel principal
+        // Painel principal que organiza os componentes
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
-        // Banner superior
+        // Painel de banner superior
         JPanel bannerPanel = new JPanel();
         bannerPanel.setLayout(new BorderLayout());
         bannerPanel.setPreferredSize(new Dimension(frame.getWidth(), 60));
 
+        // Configuração do banner
         JLabel bannerLabel = new JLabel("Autodiagnóstico de TI", JLabel.CENTER);
         bannerLabel.setOpaque(true);
         bannerLabel.setBackground(new Color(0, 0, 128)); // Azul escuro
         bannerLabel.setForeground(Color.WHITE); // Texto branco
         bannerLabel.setFont(new Font("Arial", Font.BOLD, 20));
 
+        // Linha vermelha no banner
         JPanel redLine = new JPanel();
         redLine.setBackground(new Color(139, 0, 0)); // Vermelho escuro
         redLine.setPreferredSize(new Dimension(frame.getWidth(), 5));
 
+        // Adiciona a linha vermelha e o texto do banner ao painel do banner
         bannerPanel.add(redLine, BorderLayout.NORTH);
         bannerPanel.add(bannerLabel, BorderLayout.CENTER);
 
-        // Painel de abas
+        // Painel de abas (JTabbedPane)
         JTabbedPane tabbedPane = new JTabbedPane();
 
         // Aba 1: Diagnóstico geral de rede
@@ -71,17 +77,19 @@ public class NetworkInfoTabbedGUI {
         footerPanel.setBackground(new Color(139, 0, 0)); // Vermelho escuro
         footerPanel.setPreferredSize(new Dimension(frame.getWidth(), 5));
 
-        // Adicionar o banner e as abas ao painel principal
+        // Adiciona o banner e as abas ao painel principal
         mainPanel.add(bannerPanel, BorderLayout.NORTH);
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
         mainPanel.add(footerPanel, BorderLayout.SOUTH);
 
+        // Adiciona o painel principal à janela e a torna visível
         frame.getContentPane().add(mainPanel);
         frame.setVisible(true);
     }
 
     /**
      * Obtém o diagnóstico geral de rede.
+     * Verifica se há um IP privado, gateway e conexão com DNS.
      */
     private static String getNetworkDiagnosis() {
         StringBuilder diagnosis = new StringBuilder("<html><body style='font-size:14px; font-family: Arial;'>");
@@ -92,6 +100,14 @@ public class NetworkInfoTabbedGUI {
             String dnsIntranet = null;
             String dns = null;
 
+            // URLs configuradas para diagnóstico
+            String urlSiteDeIntranet = "intranet.nome.com.br";
+            String urlSistemaDeDocumentos = "sistema.nome.com.br";
+            String urlSistemaCloud = "cloud.nome.com.br";
+            String urlSistemaRemoto = "sistemaremoto.nome.com.br";
+            String urlSistemaRemotoDePessoal = "sistemadepessoal.nomepessoal.com.br";
+            String urlSiteInternet = "www.nome.com.br";
+            String urlSiteInternetDeTerceito = "www.outronome.com.br";
 
             // Verificar se há um IP privado em uma interface ativa
             Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
@@ -120,14 +136,13 @@ public class NetworkInfoTabbedGUI {
                 }
             }
 
-            // Verificar DNS configurados através de resolução
+            // Verificar DNS configurados
             dnsIntranet = getResolvedDNS(urls.getUrlSiteDeIntranet());
             dnsInternet = getResolvedDNS(urls.getUrlSiteInternet());
             dns = dnsInternet != null ? dnsInternet : (dnsIntranet != null ? dnsIntranet : "NÃO");
             diagnosis.append("<b>Consegue resolver DNS:</b> ").append(dns).append("<br>");
 
-
-            // Colocar as informações por último
+            // Adiciona o status de IP privado à tela
             diagnosis.append("<b>Possui IP privado em uma interface ativa:</b> ")
                     .append(hasPrivateIP ? "<span style='color:green;'>SIM</span>" : "<span style='color:red;'>NÃO</span>")
                     .append("<br>");
@@ -142,7 +157,6 @@ public class NetworkInfoTabbedGUI {
                 diagnosis.append("<b>Gateway configurado:</b> <span style='color:red;'>NÃO ENCONTRADO</span><br>");
             }
 
-
             // Verificar endereços específicos
             String[] addresses = {
                     urls.getUrlSiteDeIntranet(),
@@ -154,6 +168,7 @@ public class NetworkInfoTabbedGUI {
                     urls.getUrlSiteInternetDeTerceito()
             };
 
+            // Testa ping para os endereços
             for (String address : addresses) {
                 diagnosis.append("<b>Consegue pingar ").append(address).append(":</b> ")
                         .append(ping(address) ? "<span style='color:green;'>SIM</span>" : "<span style='color:red;'>NÃO</span>")
@@ -167,16 +182,12 @@ public class NetworkInfoTabbedGUI {
         return diagnosis.toString();
     }
 
-    /**
-     * Verifica se o IP é privado.
-     */
+    // Verifica se o IP é privado (intervalos 10.x.x.x, 172.x.x.x, 192.168.x.x)
     private static boolean isPrivateIP(String ip) {
         return ip.startsWith("10.") || ip.startsWith("172.") || ip.startsWith("192.168.");
     }
 
-    /**
-     * Realiza um ping para o endereço fornecido.
-     */
+    // Realiza um ping para o endereço fornecido e retorna se o ping foi bem-sucedido
     private static boolean ping(String address) {
         try {
             Process process = Runtime.getRuntime().exec("ping -n 1 " + address);
@@ -187,11 +198,8 @@ public class NetworkInfoTabbedGUI {
         }
     }
 
-    /**
-     * Obtém o gateway padrão pelo comando tracert.
-     */
+    // Obtém o gateway padrão pelo comando tracert
     private static String getDefaultGateway() {
-
         try {
             Process process = Runtime.getRuntime().exec("tracert -d " + urls.getUrlSiteInternet());
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -199,7 +207,7 @@ public class NetworkInfoTabbedGUI {
             while ((line = reader.readLine()) != null) {
                 if (line.trim().startsWith("1")) {
                     String[] parts = line.split("\\s+");
-                    return parts[parts.length - 1]; // Último elemento é o IP do primeiro salto
+                    return parts[parts.length - 1]; // Retorna o IP do primeiro salto
                 }
             }
         } catch (Exception e) {
@@ -208,9 +216,7 @@ public class NetworkInfoTabbedGUI {
         return null;
     }
 
-    /**
-     * Resolve o DNS de um endereço.
-     */
+    // Resolve o DNS de um hostname
     private static String getResolvedDNS(String hostname) {
         try {
             InetAddress[] inetAddresses = InetAddress.getAllByName(hostname);
@@ -223,9 +229,7 @@ public class NetworkInfoTabbedGUI {
         return null;
     }
 
-    /**
-     * Obtém informações apenas das interfaces principais (Wi-Fi, Ethernet, VPN ativas, Bluetooth).
-     */
+    // Obtém informações das interfaces filtradas (Wi-Fi, Ethernet, VPN ativas)
     private static String getFilteredNetworkInterfacesInfo() {
         StringBuilder info = new StringBuilder("<html><body style='font-size:14px; font-family: Arial;'>");
         try {
@@ -254,9 +258,7 @@ public class NetworkInfoTabbedGUI {
         return info.toString();
     }
 
-    /**
-     * Obtém informações de todas as interfaces principais, incluindo subinterfaces e drivers adicionais.
-     */
+    // Obtém informações de todas as interfaces principais e seus subcomponentes
     private static String getAllNetworkInterfacesInfo() {
         StringBuilder info = new StringBuilder("<html><body style='font-size:14px; font-family: Arial;'>");
         try {
