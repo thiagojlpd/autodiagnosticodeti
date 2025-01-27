@@ -2,6 +2,7 @@ import java.util.Objects;
 
 public class Urls {
 
+    // Atributos que armazenam URLs específicas
     String urlSiteDeIntranet = "intranet.nome.com.br";
     String urlSistemaDeDocumentos = "sistema.nome.com.br";
     String urlSistemaCloud = "cloud.nome.com.br";
@@ -10,7 +11,9 @@ public class Urls {
     String urlSiteInternet = "www.nome.com.br";
     String urlSiteInternetDeTerceito = "www.outronome.com.br";
 
+    // Construtor que permite definir as URLs com base em parâmetros passados
     public Urls(String urlSiteDeIntranet, String urlSistemaDeDocumentos, String urlSistemaCloud, String urlSistemaRemoto, String urlSistemaRemotoDePessoal, String urlSiteInternet, String urlSiteInternetDeTerceito) {
+        // Verifica se os parâmetros passados são não vazios antes de atribuir às variáveis de instância
         this.urlSiteDeIntranet = !urlSiteDeIntranet.isEmpty() ? urlSiteDeIntranet : this.urlSiteDeIntranet;
         this.urlSistemaDeDocumentos = !urlSistemaDeDocumentos.isEmpty() ? urlSistemaDeDocumentos : this.urlSistemaDeDocumentos;
         this.urlSistemaCloud = !urlSistemaCloud.isEmpty() ? urlSistemaCloud : this.urlSistemaCloud;
@@ -20,25 +23,32 @@ public class Urls {
         this.urlSiteInternetDeTerceito = !urlSiteInternetDeTerceito.isEmpty() ? urlSiteInternetDeTerceito : this.urlSiteInternetDeTerceito;
     }
 
+    // Construtor padrão sem parâmetros
     public Urls() {
 
     }
 
+    // Método para comparar dois objetos Urls
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Urls url = (Urls) o;
+        if (this == o) return true;  // Verifica se os objetos são iguais
+        if (o == null || getClass() != o.getClass()) return false;  // Verifica se o objeto é nulo ou de outra classe
+        Urls url = (Urls) o;  // Faz o cast do objeto para a classe Urls
+        // Compara as URLs para garantir que todos os campos são iguais
         return Objects.equals(urlSiteDeIntranet, url.urlSiteDeIntranet) && Objects.equals(urlSistemaDeDocumentos, url.urlSistemaDeDocumentos) && Objects.equals(urlSistemaCloud, url.urlSistemaCloud) && Objects.equals(urlSistemaRemoto, url.urlSistemaRemoto) && Objects.equals(urlSistemaRemotoDePessoal, url.urlSistemaRemotoDePessoal) && Objects.equals(urlSiteInternet, url.urlSiteInternet) && Objects.equals(urlSiteInternetDeTerceito, url.urlSiteInternetDeTerceito);
     }
 
+    // Método que gera um código hash para o objeto Urls
     @Override
     public int hashCode() {
+        // Gera um código hash usando todas as URLs
         return Objects.hash(urlSiteDeIntranet, urlSistemaDeDocumentos, urlSistemaCloud, urlSistemaRemoto, urlSistemaRemotoDePessoal, urlSiteInternet, urlSiteInternetDeTerceito);
     }
 
+    // Método que retorna uma representação textual do objeto
     @Override
     public String toString() {
+        // Retorna uma string contendo todas as URLs de forma legível
         return "url{" +
                 "urlSiteDeIntranet='" + urlSiteDeIntranet + '\'' +
                 ", urlSistemaDeDocumentos='" + urlSistemaDeDocumentos + '\'' +
@@ -49,6 +59,8 @@ public class Urls {
                 ", urlSiteInternetDeTerceito='" + urlSiteInternetDeTerceito + '\'' +
                 '}';
     }
+
+    // Métodos getters e setters para acessar e modificar os valores das URLs
 
     public String getUrlSiteDeIntranet() {
         return urlSiteDeIntranet;
