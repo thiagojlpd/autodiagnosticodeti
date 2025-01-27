@@ -92,13 +92,6 @@ public class NetworkInfoTabbedGUI {
             String dnsIntranet = null;
             String dns = null;
 
-            String urlSiteDeIntranet = "intranet.nome.com.br";
-            String urlSistemaDeDocumentos = "sistema.nome.com.br";
-            String urlSistemaCloud = "cloud.nome.com.br";
-            String urlSistemaRemoto = "sistemaremoto.nome.com.br";
-            String urlSistemaRemotoDePessoal = "sistemadepessoal.nomepessoal.com.br";
-            String urlSiteInternet = "www.nome.com.br";
-            String urlSiteInternetDeTerceito = "www.outronome.com.br";
 
             // Verificar se há um IP privado em uma interface ativa
             Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
